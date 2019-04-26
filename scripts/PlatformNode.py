@@ -97,10 +97,10 @@ def callback(data):
 				pub.publish("0,0")
 				DataToSend = "5131053001 "
 				m = hashlib.sha256()
-                m.update(DataToSend.encode('utf-8'))
-                Checksum = m.hexdigest()
-                DataToSend = DataToSend + Checksum
-                pub2.publish(DataToSend)
+				m.update(DataToSend.encode('utf-8'))
+				Checksum = m.hexdigest()
+				DataToSend = DataToSend + Checksum
+				pub2.publish(DataToSend)
 			except:
 				pass
 
