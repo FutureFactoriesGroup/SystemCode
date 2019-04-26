@@ -86,9 +86,7 @@ def callback(data):
 			try:
 				NewCommand = str(-Speed)+",2\n"
 				pub.publish(str(-Speed)+",2")
-				if (NewCommand != Command):
-					arduino.write(NewCommand) #(Speed CCW,Rotate)
-					Command= NewCommand
+				arduino.write(NewCommand) #(Speed CCW,Rotate)
 			except:
 				pass
 			time.sleep(1)
