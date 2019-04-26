@@ -73,18 +73,13 @@ def  DiagBR(Size):
     return(Command)
 
 def PlacePiece():
-    Yplace = Y(-8)
-    Xplace = X(20)
-    Xcentre = X(11)
-
     serialprint(Home)
     time.sleep(10)
-    serialprint(Up)
-    serialprint(Xplace)
+    serialprint(X(20))
     time.sleep(5)
-    serialprint(Yplace)
+    serialprint(Y(-8))
     time.sleep(5)
-    serialprint(Xcentre)
+    serialprint(X(11))
     time.sleep(5)
 
 def DrawPentagon(pos):
@@ -236,16 +231,8 @@ def rosCallback(data):
     hashResult = str(m.hexdigest())
     if(hashResult == checksum and (targetNodeType=="1" or targetNodeType=="0")): # check the message is valid and for me
         if commandType == "042": # ie have we been told to do something
-<<<<<<< HEAD
             PlacePiece()
             position=0
-=======
-<<<<<<< HEAD
-            PlacePiece()
-=======
-            position=0
->>>>>>> master
->>>>>>> master
             for shape in commandData:
                 if shape in "PSDT": # check a recognised shape has been sent
                     Gcoder(shape,str(1+position))
@@ -262,12 +249,3 @@ pub = rospy.Publisher("/process", String, queue_size=10)
 sysSub = rospy.Subscriber("/system", String, rosCallback)
 sysPub = rospy.Publisher("/system", String, queue_size=10)
 rospy.spin()
-#
-# if __name__ == '__main__':
-#     shape = list()
-#     pos = list()
-#     for x in range(0,4):
-#         shape.append(raw_input("Shape (P,T,S,D)? "))
-#         pos.append( raw_input("Position (1,2,3,4,0)? "))
-#         Gcoder(shape[x],pos[x]) 
- 
