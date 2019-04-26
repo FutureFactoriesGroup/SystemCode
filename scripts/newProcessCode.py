@@ -79,7 +79,7 @@ def PlacePiece():
     time.sleep(5)
     serialprint(Y(-8))
     time.sleep(5)
-    serialprint(X(11))
+    serialprint(X(-11))
     time.sleep(5)
 
 def DrawPentagon(pos):
