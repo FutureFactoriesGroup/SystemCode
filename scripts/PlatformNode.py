@@ -65,8 +65,8 @@ for port in serialList:
 		pass
 
 PathSent = False
-def callback(data):
-	#rospy.loginfo(rospy.get_caller_id() + "Iarduino heard %s", data.data)
+
+def callback2(data):
 	global PathSent
 	global pub
 	global pub2
@@ -79,30 +79,7 @@ def callback(data):
 	global GoToZero
 	global Target
 	message = str(data.data)
-	#pub.publish(data.data)
 	if message.startswith("31"):
-		if message[4:7] == "052":
-			Speed = 15
-			try:
-				NewCommand = str(-Speed)+",2\n"
-				pub.publish(str(-Speed)+",2")
-				arduino.write(NewCommand) #(Speed CCW,Rotate)
-			except:
-				pass
-			time.sleep(1)
-			try:
-				arduino.write("0,0\n") #All stop
-				pub.publish("0,0")
-				DataToSend = "5131053001 "
-				m = hashlib.sha256()
-				m.update(DataToSend.encode('utf-8'))
-				Checksum = m.hexdigest()
-				DataToSend = DataToSend + Checksum
-				pub2.publish(DataToSend)
-			except:
-				pass
-
-
 		if message[4:7] == "022" and PathSent == True:
 			#StartTime = time.time()*1000
 			#TimeStep = StartTime - PreviousTime
@@ -198,43 +175,86 @@ def callback(data):
 						PtIndex += 1
 
 			else: #Last Point - Go to zero angle
-				if(alpha > -(Target - 5) or alpha < (Target - 5)):
-					if (alpha > -(Target - 5)):
-						#rotate anticlockwise
+				if(Target == 314):
+					if(alpha > -(Target - 5) and alpha < (Target - 5)):
+						if (alpha > -(Target - 5)):
+							#rotate anticlockwise
+							try:
+								NewCommand = str(Speed2)+",1\n"
+								pub.publish(str(Speed2)+",1")
+								if (NewCommand != Command):
+									arduino.write(NewCommand) #(Speed CCW,Rotate)
+									Command= NewCommand
+							except:
+								pass
+						elif (alpha < (Target -5)):
+							try:
+								NewCommand = str(-Speed2)+",1\n"
+								pub.publish(str(-Speed2)+",1")
+								if (NewCommand != Command):
+									arduino.write(NewCommand) #(Speed CCW,Rotate)
+									Command= NewCommand
+							except:
+								pass
+					else:
+						PathSent = False
 						try:
-							NewCommand = str(-Speed)+",1\n"
-							pub.publish(str(-Speed)+",1")
-							if (NewCommand != Command):
-								arduino.write(NewCommand) #(Speed CCW,Rotate)
-								Command= NewCommand
+							arduino.write("0,0\n") #All stop
+							pub.publish("0,0")
+							DataToSend = "5131045000"
+							m = hashlib.sha256()
+							m.update(DataToSend.encode('utf-8'))
+							Checksum = m.hexdigest()
+							DataToSend = DataToSend + Checksum
+							pub2.publish(DataToSend)
 						except:
 							pass
-					elif (alpha < (Target -5)):
+
+				elif(Target == 0):
+					if(alpha > -(Target - 5) or alpha < (Target - 5)):
+						if (alpha > -(Target - 5)):
+							#rotate anticlockwise
+							try:
+								NewCommand = str(-Speed2)+",1\n"
+								pub.publish(str(-Speed2)+",1")
+								if (NewCommand != Command):
+									arduino.write(NewCommand) #(Speed CCW,Rotate)
+									Command= NewCommand
+							except:
+								pass
+						elif (alpha < (Target -5)):
+							try:
+								NewCommand = str(Speed2)+",1\n"
+								pub.publish(str(Speed2)+",1")
+								if (NewCommand != Command):
+									arduino.write(NewCommand) #(Speed CCW,Rotate)
+									Command= NewCommand
+							except:
+								pass
+
+					# elif((DistanceErr < 10)):
+					# 	try:pub
+					# 		NewCommand = "10,2\n"
+					# 		pub.publish("10,2")
+					# 		if (NewCommand != Command):
+					# 			arduino.write(NewCommand) #(Speed CCW,Rotate)
+					# 			Command= NewCommand
+								#Speed = 0
+					# except:
+					# 	pass
+					else:
+						PathSent = False
 						try:
-							NewCommand = str(Speed)+",1\n"
-							pub.publish(str(Speed)+",1")
-							if (NewCommand != Command):
-								arduino.write(NewCommand) #(Speed CCW,Rotate)
-								Command= NewCommand
+							arduino.write("0,0\n") #All stop
+							pub.publish("0,0")
+							DataToSend = "5131045000"
+							m = hashlib.sha256()
+							m.update(DataToSend.encode('utf-8'))
+							Checksum = m.hexdigest()
+							DataToSend = DataToSend + Checksum
+							pub2.publish(DataToSend)
 						except:
 							pass
-				# elif((DistanceErr < 10)):
-				# 	try:
-				# 		NewCommand = "10,2\n"
-				# 		pub.publish("10,2")
-				# 		if (NewCommand != Command):
-				# 			arduino.write(NewCommand) #(Speed CCW,Rotate)
-				# 			Command= NewCommand
-							#Speed = 0
-				# except:
-				# 	pass
-				else:
-					PathSent = False
-					try:
-						arduino.write("0,0\n") #All stop
-						pub.publish("0,0")
-					except:
-						pass
 
 
 			ErrorVector = "(" + str(int(Xerr))+","+str(int(Yerr))+","+str(int(alphaError)) + ")"
@@ -249,6 +269,43 @@ def callback(data):
 			# 	#pub.publish("No Serial")
 			# 	#exit()
 
+def callback(data):
+	#rospy.loginfo(rospy.get_caller_id() + "Iarduino heard %s", data.data)
+	global PathSent
+	global pub
+	global pub2
+	global x
+	global y
+	global PtIndex
+	global PreviousTime
+	global pathlength
+	global Command
+	global GoToZero
+	global Target
+	message = str(data.data)
+	#pub.publish(data.data)
+	if message.startswith("31"):
+		if message[4:7] == "052":
+			Speed = 15
+			try:
+				NewCommand = str(-Speed)+",2\n"
+				pub.publish(str(-Speed)+",2")
+				arduino.write(NewCommand) #(Speed CCW,Rotate)
+			except:
+				pass
+			time.sleep(1)
+			try:
+				arduino.write("0,0\n") #All stop
+				pub.publish("0,0")
+				DataToSend = "5131053001 "
+				m = hashlib.sha256()
+				m.update(DataToSend.encode('utf-8'))
+				Checksum = m.hexdigest()
+				DataToSend = DataToSend + Checksum
+				pub2.publish(DataToSend)
+			except:
+				pass
+
 
 		elif message[4:7] == "019":
 			pub.publish("019")
@@ -261,10 +318,11 @@ def callback(data):
 			for i in range(pathlength):
 				x.append(int(message[(2*i)+1]))
 				y.append(int(message[(2*i)+2]))
-			Target = 0 #int(message[-1])
+			Target = int(message[-1])
 			PathSent = True
 			GoToZero = False
 			PtIndex = 0
+			Command = ""
 
 		elif message[4:7] == "041":
 			if Arm != None:
@@ -288,6 +346,7 @@ def callback(data):
 					pass
 
 rospy.Subscriber('/transport', String, callback)
+rospy.Subscriber('/position', String, callback2)
 try:
 	rospy.spin()
 
