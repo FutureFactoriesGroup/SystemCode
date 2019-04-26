@@ -72,6 +72,21 @@ def  DiagBR(Size):
     Command =  "G00 " + "X"+str(-Size) + " Y"+str(Size)+"\n"
     return(Command)
 
+def PlacePiece():
+    Yplace = Y(-8)
+    Xplace = X(20)
+    Xcentre = X(11)
+
+    serialprint(Home)
+    time.sleep(10)
+    serialprint(Up)
+    serialprint(Xplace)
+    time.sleep(5)
+    serialprint(Yplace)
+    time.sleep(5)
+    serialprint(Xcentre)
+    time.sleep(5)
+
 def DrawPentagon(pos):
     startpos = Centre(pos)
 
@@ -221,6 +236,7 @@ def rosCallback(data):
     hashResult = str(m.hexdigest())
     if(hashResult == checksum and (targetNodeType=="1" or targetNodeType=="0")): # check the message is valid and for me
         if commandType == "042": # ie have we been told to do something
+            PlacePiece()
             for shape in commandData:
                 if shape in "PSDT": # check a recognised shape has been sent
                     Gcoder(shape,str(1+commandData.index(shape)))
