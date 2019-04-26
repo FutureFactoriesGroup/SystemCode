@@ -8,6 +8,7 @@ from std_msgs.msg import String
 import math
 import numpy as np
 import glob
+import hashlib
 
 x = []
 y = []
@@ -23,6 +24,7 @@ Target = 0
 #print("this is a test")
 rospy.init_node('TransportNode', anonymous=True)
 pub = rospy.Publisher('/PlatformError', String, queue_size=10)
+pub2 = rospy.Publisher('/transport', String, queue_size=10)
 time.sleep(2)
 #pub.publish("Starting up")
 #print("starting up")
@@ -37,7 +39,7 @@ for i in ports:
 	except:
 		pass
 
-#Arm = serial.Serial('/dev/ttyACM0',115200,timeout = 1)
+#Arm = serial.Serial('/dev/ttyACM0',1152				pub2.publish()00,timeout = 1)
 time.sleep(2)
 inputString = ""
 
@@ -67,10 +69,10 @@ def callback(data):
 	#rospy.loginfo(rospy.get_caller_id() + "Iarduino heard %s", data.data)
 	global PathSent
 	global pub
+	global pub2
 	global x
 	global y
 	global PtIndex
-	global Speed
 	global PreviousTime
 	global pathlength
 	global Command
@@ -79,6 +81,30 @@ def callback(data):
 	message = str(data.data)
 	#pub.publish(data.data)
 	if message.startswith("31"):
+		if message[4:7] == "052":
+			Speed = 15
+			try:
+				NewCommand = str(-Speed)+",2\n"
+				pub.publish(str(-Speed)+",2")
+				if (NewCommand != Command):
+					arduino.write(NewCommand) #(Speed CCW,Rotate)
+					Command= NewCommand
+			except:
+				pass
+			time.sleep(1)
+			try:
+				arduino.write("0,0\n") #All stop
+				pub.publish("0,0")
+				DataToSend = "5131053001 "
+				m = hashlib.sha256()
+                m.update(DataToSend.encode('utf-8'))
+                Checksum = m.hexdigest()
+                DataToSend = DataToSend + Checksum
+                pub2.publish(DataToSend)
+			except:
+				pass
+
+
 		if message[4:7] == "022" and PathSent == True:
 			#StartTime = time.time()*1000
 			#TimeStep = StartTime - PreviousTime
