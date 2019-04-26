@@ -293,7 +293,7 @@ def callback(data):
 				arduino.write(NewCommand) #(Speed CCW,Rotate)
 			except:
 				pass
-			time.sleep(1)
+			time.sleep(1.5)
 			try:
 				arduino.write("0,0\n") #All stop
 				pub.publish("0,0")

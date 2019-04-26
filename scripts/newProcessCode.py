@@ -239,7 +239,7 @@ def rosCallback(data):
                     position += 1
             serialprint(Home)
             # ack
-            messageString =  createMessage([5,1,2,1,"046"," "])
+            messageString =  createMessage([5,1,1,1,"046"," "])
             pub.publish(messageString)
         #if commandType == "":
 
@@ -249,3 +249,11 @@ pub = rospy.Publisher("/process", String, queue_size=10)
 sysSub = rospy.Subscriber("/system", String, rosCallback)
 sysPub = rospy.Publisher("/system", String, queue_size=10)
 rospy.spin()
+#
+# if __name__ == '__main__':
+#     shape = list()
+#     pos = list()
+#     for x in range(0,4):
+#         shape.append(raw_input("Shape (P,T,S,D)? "))
+#         pos.append( raw_input("Position (1,2,3,4,0)? "))
+#         Gcoder(shape[x],pos[x])
