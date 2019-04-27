@@ -120,8 +120,9 @@ def callback2(data):
 			pub.publish("DesiredAlpha: " + str(desiredAlpha))
 
 			DistanceErr = ((Xerr**2)+(Yerr**2))**0.5
-			Speed = 15
-			Speed2 = 10
+			Speed = 10
+			RotSpeed = 15
+			Speed2 = 15
 			DistanceThreshold = 25
 			if(not GoToZero):
 				if((DistanceErr > DistanceThreshold)):# and (PtIndex < pathlength-2)):	#in mm
@@ -129,8 +130,8 @@ def callback2(data):
 					if (alphaError > 5 and alphaError < 309):
 						#rotate anticlockwise
 						try:
-							NewCommand = str(Speed)+",1\n"
-							pub.publish(str(Speed)+",1")
+							NewCommand = str(RotSpeed)+",1\n"
+							pub.publish(str(RotSpeed)+",1")
 							if (NewCommand != Command):
 								arduino.write(NewCommand) #(Speed CCW,Rotate)
 								Command= NewCommand
@@ -138,8 +139,8 @@ def callback2(data):
 							pass
 					elif (alphaError < -5 and alphaError > -309):
 						try:
-							NewCommand = str(-Speed)+",1\n"
-							pub.publish(str(-Speed)+",1")
+							NewCommand = str(-RotSpeed)+",1\n"
+							pub.publish(str(-RotSpeed)+",1")
 							if (NewCommand != Command):
 								arduino.write(NewCommand) #(Speed CCW,Rotate)
 								Command= NewCommand
@@ -175,13 +176,14 @@ def callback2(data):
 						PtIndex += 1
 
 			else: #Last Point - Go to zero angle
+				print("Last Point")
 				if(Target == 314):
 					if(alpha > -(Target - 5) and alpha < (Target - 5)):
 						if (alpha > -(Target - 5)):
 							#rotate anticlockwise
 							try:
-								NewCommand = str(Speed2)+",1\n"
-								pub.publish(str(Speed2)+",1")
+								NewCommand = str(-Speed2)+",1\n"
+								pub.publish(str(-Speed2)+",1")
 								if (NewCommand != Command):
 									arduino.write(NewCommand) #(Speed CCW,Rotate)
 									Command= NewCommand
@@ -189,8 +191,8 @@ def callback2(data):
 								pass
 						elif (alpha < (Target -5)):
 							try:
-								NewCommand = str(-Speed2)+",1\n"
-								pub.publish(str(-Speed2)+",1")
+								NewCommand = str(Speed2)+",1\n"
+								pub.publish(str(Speed2)+",1")
 								if (NewCommand != Command):
 									arduino.write(NewCommand) #(Speed CCW,Rotate)
 									Command= NewCommand
@@ -293,7 +295,7 @@ def callback(data):
 				arduino.write(NewCommand) #(Speed CCW,Rotate)
 			except:
 				pass
-			time.sleep(1.5)
+			time.sleep(1)
 			try:
 				arduino.write("0,0\n") #All stop
 				pub.publish("0,0")
