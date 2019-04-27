@@ -68,7 +68,7 @@ def messageCallback(data):
             port.write(("off" + '\n').encode())
             print("off")
             m = hashlib.sha256()
-            DataToSend = "5161046000 "
+            DataToSend = "5161046001 "
             m.update(DataToSend.encode('utf-8'))
             Checksum = m.hexdigest()
             DataToSend = DataToSend + Checksum
