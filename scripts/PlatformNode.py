@@ -179,7 +179,7 @@ def callback2(data):
 				print("Last Point")
 				if(Target == 314):
 					if(alpha > -(Target - 5) and alpha < (Target - 5)):
-						if (alpha > -(Target - 5)):
+						if (alpha > -(Target - 5) and alpha < 0):
 							#rotate anticlockwise
 							try:
 								NewCommand = str(-Speed2)+",1\n"
@@ -189,7 +189,7 @@ def callback2(data):
 									Command= NewCommand
 							except:
 								pass
-						elif (alpha < (Target -5)):
+						elif (alpha < (Target -5) and alpha > 0):
 							try:
 								NewCommand = str(Speed2)+",1\n"
 								pub.publish(str(Speed2)+",1")
@@ -288,14 +288,14 @@ def callback(data):
 	#pub.publish(data.data)
 	if message.startswith("31"):
 		if message[4:7] == "052":
-			Speed = 15
+			Speed = 12
 			try:
 				NewCommand = str(-Speed)+",2\n"
 				pub.publish(str(-Speed)+",2")
 				arduino.write(NewCommand) #(Speed CCW,Rotate)
 			except:
 				pass
-			time.sleep(1)
+			time.sleep(3)
 			try:
 				arduino.write("0,0\n") #All stop
 				pub.publish("0,0")
@@ -313,7 +313,7 @@ def callback(data):
 			pub.publish("019")
 			info = message.split("(")
 			message = info[1]
-			message = message[:-65].split(",")
+			message = (message[:-65]).split(",")
 			pathlength = int(message[0])
 			x = []
 			y = []
@@ -347,8 +347,27 @@ def callback(data):
 				except:
 					pass
 
+
+
+
+def callback3(data):
+	global PathSent
+	global pub
+	message = str(data.data)
+	if message.startswith("00"):
+		if message[4:7] == "035":
+			PathSent = False
+			try:
+				arduino.write("0,0\n") #All stop
+				pub.publish("0,0")
+			except:
+				pass
+
+
+
 rospy.Subscriber('/transport', String, callback)
 rospy.Subscriber('/position', String, callback2)
+rospy.Subscriber('/system', String, callback3)
 try:
 	rospy.spin()
 
