@@ -75,15 +75,11 @@ def  DiagBR(Size):
 def PlacePiece():
     serialprint(Home)
     time.sleep(10)
-    serialprint(X(20*cm))
+    serialprint(X(16*cm))
     time.sleep(5)
     serialprint(Y(-8*cm))
     time.sleep(5)
-<<<<<<< HEAD
     serialprint(X(-11))
-=======
-    serialprint(X(11*cm))
->>>>>>> master
     time.sleep(5)
 
 def DrawPentagon(pos):
