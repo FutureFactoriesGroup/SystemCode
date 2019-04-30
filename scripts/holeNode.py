@@ -4,6 +4,7 @@ import rospy
 from std_msgs.msg import String
 import serial
 import time
+import glob
 
 pub = rospy.Publisher("/process", String, queue_size=10)
 
@@ -30,8 +31,20 @@ pub = rospy.Publisher("/process", String, queue_size=10)
 #     dataToCheckSum += checksum
 #     return dataToCheckSum
 
+serialList = []
+ports = glob.glob('/dev/ttyACM[0-9]*')
+#print(ports)
 
-port = serial.Serial('/dev/ttyACM0',9600,timeout=5)
+for i in ports:
+	try:
+		serialList.append(serial.Serial(i, 9600,timeout = 1))
+		#pub.publish("Flag 1")
+	except:
+		pass
+
+
+
+port = serialList[0]
 
 
 def messageCallback(data):

@@ -360,6 +360,7 @@ def callback3(data):
 			try:
 				arduino.write("0,0\n") #All stop
 				pub.publish("0,0")
+				Arm.write("M2231 V0")
 			except:
 				pass
 
