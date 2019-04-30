@@ -6,8 +6,23 @@ import time
 import serial
 import hashlib
 from std_msgs.msg import String
+import glob
 
-arduino = serial.Serial('/dev/ttyACM0', 115200,timeout = 1)
+
+serialList = []
+ports = glob.glob('/dev/ttyACM[0-9]*')
+#print(ports)
+
+for i in ports:
+	try:
+		serialList.append(serial.Serial(i, 115200,timeout = 1))
+		#pub.publish("Flag 1")
+	except:
+		pass
+
+
+
+arduino = serialList[0]
 time.sleep(2)
 
 cm = 391

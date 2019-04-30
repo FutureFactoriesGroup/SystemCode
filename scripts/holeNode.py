@@ -45,6 +45,7 @@ for i in ports:
 
 
 port = serialList[0]
+time.sleep(2)
 
 
 def messageCallback(data):
